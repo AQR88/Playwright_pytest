@@ -25,7 +25,7 @@ def page(browser_type):
         if browser_type not in ["chromium", "firefox", "webkit"]:
             raise ValueError(f"Invalid browser_type: {browser_type}. Use one of: chromium, firefox, webkit")
 
-        browser = getattr(p, browser_type).launch(headless=False)
+        browser = getattr(p, browser_type).launch(headless=True)
         context = browser.new_context()
         page = context.new_page()
         yield page
