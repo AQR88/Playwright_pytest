@@ -1,12 +1,12 @@
-__pycache__/
+/__pycache__/
 *.py[cod]
 *$py.class
 .cache/
 .pytest_cache/
-playwright-report/
-playwright-trace/
-allure-results/
-allure-report/
+/playwright-report/
+/playwright-trace/
+/allure-results/
+/allure-report/
 
 
 
