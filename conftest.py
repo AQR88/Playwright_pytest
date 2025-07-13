@@ -25,7 +25,7 @@ def page(browser_type):
         if browser_type not in ["chromium", "firefox", "webkit"]:
             raise ValueError(f"Invalid browser_type: {browser_type}. Use one of: chromium, firefox, webkit")
 
-        browser = getattr(p, browser_type).launch(headless=True)
+        browser = getattr(p, browser_type).launch(headless=False)
         context = browser.new_context()
         page = context.new_page()
         yield page
@@ -41,18 +41,23 @@ def test_user():
         "email": f"tymur_{uuid.uuid4().hex[:6]}@example.com",
         "password": "TestPass123"
     }
-
-
 @pytest.fixture(scope="function")
 def ensure_registered_user(page, test_user):
+    page.context.clear_cookies()
     page.goto("https://automationexercise.com")
+    page.wait_for_load_state("networkidle")
+
+    if page.locator("text=Logout").is_visible():
+        page.click("text=Logout")
+        page.wait_for_selector("text=Login to your account")
+
     page.click("text=Signup / Login")
     page.fill("input[name='name']", test_user["name"])
     page.fill("input[data-qa='signup-email']", test_user["email"])
     page.click("button[data-qa='signup-button']")
 
     if page.locator("text=Email Address already exist!").is_visible():
-        return
+        return  
 
     page.check("#id_gender1")
     page.fill("#password", test_user["password"])
@@ -73,3 +78,9 @@ def ensure_registered_user(page, test_user):
     page.fill("#mobile_number", "1234567890")
     page.click("button[data-qa='create-account']")
     page.click("text=Continue")
+
+    assert page.locator("text=Logged in as").is_visible()
+
+
+
+    

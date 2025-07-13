@@ -3,10 +3,16 @@ import pytest
 
 @allure.step("Go to Signup/Login")
 def go_to_signup_login(page):
-    page.goto("https://automationexercise.com") 
-    page.wait_for_timeout(1000)
-    page.click("a[href='/login']")
+    page.goto("https://automationexercise.com")
+    page.wait_for_load_state("networkidle")
+
+    if page.locator("text=Logged in as").is_visible():
+        page.click("text=Logout")
+        page.wait_for_selector("text=Login to your account")
+
+    page.click("text=Signup / Login")
     allure.attach(page.screenshot(), name="SignupLogin", attachment_type=allure.attachment_type.PNG)
+
 
 @allure.step("Register new user")
 def register_user(page, name, email):
