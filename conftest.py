@@ -18,18 +18,7 @@ def pytest_addoption(parser):
 def browser_type(request):
     return request.config.getoption("--my_browser")
 
-
-
-# @pytest.fixture(scope="function")
-# def page(browser_type):
-#     with sync_playwright() as p:
-#         browser = getattr(p, browser_type).launch(headless=False)
-#         context = browser.new_context()
-#         page = context.new_page()
-#         yield page
-#         context.close()
-#         browser.close()
-#         @pytest.fixture(scope="function")
+@pytest.fixture(scope="function") 
 def page(browser_type):
     with sync_playwright() as p:
         browser_type = browser_type.lower()
