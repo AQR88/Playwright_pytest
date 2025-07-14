@@ -64,3 +64,17 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: allure-report
           publish_branch: gh-pages
+
+      - name: Notify Slack about test result
+        if: always()
+        run: |
+          STATUS="${{ needs.test.result }}"
+          REPO="${{ github.repository }}"
+          PAGES_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+          COMMIT="${{ github.sha }}"
+          BRANCH="${{ github.ref_name }}"
+          MESSAGE="🧪 *Playwright Test Run Result*\n\n• *Repo:* ${REPO}\n• *Branch:* ${BRANCH}\n• *Status:* ${STATUS}\n• *Report:* ${PAGES_URL}\n• *Commit:* ${COMMIT}"
+
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{\"text\": \"$MESSAGE\"}" \
+            ${{ secrets.SLACK_WEBHOOK_URL }}
